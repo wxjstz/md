@@ -170,6 +170,39 @@ void md_free(void *ptr,char *file,size_t line)
 
 void md_dump()
 {
+    while(!list_empty(list))
+    {
+        md_list* md = list_peek_head(list,md_list,node);
+        list_remove_head(list);
+        printf("%p : \n",md->p);
+        while(!list_empty(md->log))
+        {
+            md_log* log = list_peek_head(md->log,md_log,node);
+            list_remove_head(md->log);
+            switch(log->type)
+            {
+                case md_log_malloc:
+                    printf("\t%p malloc %lu bytes in [%s : %d]\n",
+                        log->p,log->size,log->file,log->line);
+                    break;
+                case md_log_calloc:
+                    printf("\t%p calloc %lu * %lu bytes in [%s : %d]\n",
+                        log->p,log->nmemb,log->size,log->file,log->line);
+                    break;
+                case md_log_realloc:
+                    printf("\t%p realloc %lu bytes in [%s : %d]\n",
+                        log->p,log->size,log->file,log->line);
+                    break;
+            }
+            free(log);
+        }
+        free(md);
+    }
+}
+
+/* issuse : don't free memory
+void md_dump()
+{
     BEGIN_LIST_EACH(i,list,md_list,node)
     {
         printf("%p : \n",i->p);
@@ -195,7 +228,7 @@ void md_dump()
     }
     END_LIST_EACH();
 }
-
+*/
 
 
 
