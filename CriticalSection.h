@@ -14,7 +14,7 @@ typedef pthread_mutex_t CS;
 
 #include <windows.h>
 typedef CRITICAL_SECTION CS;
-#define CS_INIT(m)      InitializeCriticalSection(m,NULL)
+#define CS_INIT(m)      InitializeCriticalSection(m)
 #define CS_RELEASE(m)   DeleteCriticalSection(m)
 #define CS_ENTRY(m)     EnterCriticalSection(m)
 #define CS_LEAVE(m)     LeaveCriticalSection(m)
