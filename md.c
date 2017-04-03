@@ -3,6 +3,9 @@
 #include <stdlib.h>
 
 #include "list.h"
+#include "CriticalSection.h"
+
+static CS lock;
 
 enum{md_log_invalid,md_log_malloc,md_log_calloc,md_log_realloc};
 
@@ -66,13 +69,17 @@ md_list* search_md(void *p)
 	return NULL;
 }
 
-
+void md_init()
+{
+    CS_INIT(&lock);
+}
 void* md_malloc(size_t size,char *file,size_t line)
 {
 	void *p = malloc(size);
 	if(!p)
 		return p;
-	
+
+	CS_ENTRY(&lock);
 	md_list *pos = search_md(p);
 	if((pos == NULL) || (pos->p > p))
 	{
@@ -85,6 +92,7 @@ void* md_malloc(size_t size,char *file,size_t line)
 	}
 	md_log *log = alloc_md_log(p,md_log_malloc,1,size,file,line);
 	list_add_tail(pos->log,log,node);
+	CS_LEAVE(&lock);
 	
 	return p;
 }
@@ -95,6 +103,7 @@ void* md_calloc(size_t nmemb, size_t size,char *file,size_t line)
 	if(!p)
 		return p;
 	
+	CS_ENTRY(&lock);
 	md_list *pos = search_md(p);
 	if((pos == NULL) || (pos->p > p))
 	{
@@ -107,6 +116,7 @@ void* md_calloc(size_t nmemb, size_t size,char *file,size_t line)
 	}
 	md_log *log = alloc_md_log(p,md_log_calloc,nmemb,size,file,line);
 	list_add_tail(pos->log,log,node);
+	CS_LEAVE(&lock);
 	
 	return p;
 }
@@ -118,6 +128,7 @@ void* md_realloc(void *ptr, size_t size,char *file,size_t line)
 	if(!p)
 		return p;
 	
+	CS_ENTRY(&lock);
 	md_list *pos = search_md(ptr);
 	if(pos == NULL || pos->p != ptr)
 	{
@@ -127,6 +138,7 @@ void* md_realloc(void *ptr, size_t size,char *file,size_t line)
 	
 	md_log *log = alloc_md_log(p,md_log_realloc,1,size,file,line);
 	list_add_tail(pos->log,log,node);
+	CS_LEAVE(&lock);
 	
 	return p;
 }
@@ -135,6 +147,7 @@ void* md_realloc(void *ptr, size_t size,char *file,size_t line)
 
 void md_free(void *ptr,char *file,size_t line)
 {
+    CS_ENTRY(&lock);
     md_list *pos = search_md(ptr);
 	if(pos == NULL || pos->p != ptr)
 	{
@@ -150,6 +163,7 @@ void md_free(void *ptr,char *file,size_t line)
 	
 	list_remove(pos,node);
 	free(pos);
+	CS_LEAVE(&lock);
 	
 	free(ptr);
 }

@@ -3,10 +3,15 @@
 
 #include "md.h" /* this must follow `#include <stdlib.h>`  */
 
+void __attribute__((constructor)) md_init_init()
+{
+    md_init();
+}
 void __attribute__((destructor)) md_dump_fini()
 {
     md_dump();
 }
+
 
 
 int main()

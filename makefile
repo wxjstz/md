@@ -1,4 +1,4 @@
-libmd.a : list.c list.h md.c md.h
+libmd.a : list.c list.h md.c md.h CriticalSection.h
 	@gcc -c list.c
 	@gcc -c md.c
 	@ar rcs libmd.a md.o list.o

@@ -1,7 +1,7 @@
 #ifndef __MD_H__
 #define __MD_H__
 
-
+void md_init();
 void* md_malloc(size_t size,char *file,size_t line);
 void* md_calloc(size_t nmemb, size_t size,char *file,size_t line);
 void* md_realloc(void *ptr, size_t size,char *file,size_t line);
