@@ -10,4 +10,4 @@ test : example
 	@./example
 
 clean :
-	-@rm -f *.o *.a test
+	-@rm -f *.o *.a example
