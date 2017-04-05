@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "md.h" /* this must follow `#include <stdlib.h>`  */
+/* define `DISABLE_MD` to release with out memory leak debug */
+//#define DISABLE_MD
+
+#include "md.h"     /* this must follow `#include <stdlib.h>`  */
 
 void __attribute__((constructor)) md_init_init()
 {
