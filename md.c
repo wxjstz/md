@@ -168,13 +168,13 @@ void md_free(void *ptr,char *file,size_t line)
 	free(ptr);
 }
 
-void md_dump()
+void md_dump(FILE *fp)
 {
     while(!list_empty(list))
     {
         md_list* md = list_peek_head(list,md_list,node);
         list_remove_head(list);
-        printf("%p : \n",md->p);
+        fprintf(fp,"%p : \n",md->p);
         while(!list_empty(md->log))
         {
             md_log* log = list_peek_head(md->log,md_log,node);
@@ -182,15 +182,15 @@ void md_dump()
             switch(log->type)
             {
                 case md_log_malloc:
-                    printf("\t%p malloc %lu bytes in [%s : %d]\n",
+                    fprintf(fp,"\t%p malloc %lu bytes in [%s : %d]\n",
                         log->p,log->size,log->file,log->line);
                     break;
                 case md_log_calloc:
-                    printf("\t%p calloc %lu * %lu bytes in [%s : %d]\n",
+                    fprintf(fp,"\t%p calloc %lu * %lu bytes in [%s : %d]\n",
                         log->p,log->nmemb,log->size,log->file,log->line);
                     break;
                 case md_log_realloc:
-                    printf("\t%p realloc %lu bytes in [%s : %d]\n",
+                    fprintf(fp,"\t%p realloc %lu bytes in [%s : %d]\n",
                         log->p,log->size,log->file,log->line);
                     break;
             }

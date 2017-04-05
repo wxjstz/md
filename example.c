@@ -9,7 +9,7 @@ void __attribute__((constructor)) md_init_init()
 }
 void __attribute__((destructor)) md_dump_fini()
 {
-    md_dump();
+    md_dump(stdout);
 }
 
 
