@@ -33,7 +33,7 @@ typedef struct
 
 DEFINE_LIST_HEAD(list);
 
-md_log* alloc_md_log(void *p,int type,size_t nmemb,size_t size,
+static md_log* alloc_md_log(void *p,int type,size_t nmemb,size_t size,
                         char *file,int line)
 {
 	md_log *r = malloc(sizeof(*r));
@@ -48,7 +48,7 @@ md_log* alloc_md_log(void *p,int type,size_t nmemb,size_t size,
 	INIT_LIST_HEAD(r->node);
 }
 
-md_list* alloc_md_list(void *p)
+static md_list* alloc_md_list(void *p)
 {
 	md_list *r = malloc(sizeof(*r));
 	if(!r)
@@ -58,7 +58,7 @@ md_list* alloc_md_list(void *p)
 	INIT_LIST_HEAD(r->node);
 }
 
-md_list* search_md(void *p)
+static md_list* search_md(void *p)
 {
 	BEGIN_LIST_EACH(iter,list,md_list,node)
 	{
